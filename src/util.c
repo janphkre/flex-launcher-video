@@ -24,13 +24,13 @@ extern Hotkey          *hotkeys;
 Menu                   *menu  = NULL;
 Entry                  *entry = NULL;
 
-static const char *mode_settings[][5] = {
-    {"Color", "Image", "Slideshow", "Transparent", NULL}, // Background Mode
-    {"Blank", "None", "Quit", NULL, NULL},                // OnLaunch
-    {"Truncated", "Shrink", "None", NULL, NULL},          // OversizeMode
-    {"Left", "Right", NULL, NULL, NULL},                  // Clock Alignment
-    {"24hr", "12hr", "Auto", NULL, NULL},                 // Clock Format
-    {"Big", "Little", "Auto", NULL, NULL}                 // Date Format
+static const char *mode_settings[][6] = {
+    {"Color", "Image", "Slideshow", "Transparent", "Video", NULL}, // Background Mode
+    {"Blank", "None", "Quit", NULL, NULL, NULL},                // OnLaunch
+    {"Truncated", "Shrink", "None", NULL, NULL, NULL},          // OversizeMode
+    {"Left", "Right", NULL, NULL, NULL, NULL},                  // Clock Alignment
+    {"24hr", "12hr", "Auto", NULL, NULL, NULL},                 // Clock Format
+    {"Big", "Little", "Auto", NULL, NULL, NULL}                 // Date Format
 };
 
 // A function to handle the arguments from the command line

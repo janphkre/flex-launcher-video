@@ -12,9 +12,10 @@ endif()
 # Build libraries
 add_subdirectory("external")
 add_subdirectory("platform")
+add_subdirectory("video")
 
 # Link libraries together 
-target_link_libraries(${EXECUTABLE_TITLE} platform inih)
+target_link_libraries(${EXECUTABLE_TITLE} platform inih video)
 if (UNIX)
   target_link_libraries(${EXECUTABLE_TITLE} PkgConfig::SDL2 PkgConfig::SDL2_IMAGE PkgConfig::SDL2_TTF m)
 else ()

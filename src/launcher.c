@@ -8,6 +8,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <SDL_thread.h>
+#include <SDL_video.h>
 #include "launcher.h"
 #include <launcher_config.h>
 #include "image.h"
@@ -15,6 +16,7 @@
 #include "debug.h"
 #include "clock.h"
 #include "platform/platform.h"
+#include "video/video.h"
 
 static void init_sdl(void);
 static void init_sdl_image(void);
@@ -217,6 +219,7 @@ static void init_sdl()
 // A function to create the window and renderer
 static void create_window()
 {
+
     window = SDL_CreateWindow(PROJECT_NAME,
                  SDL_WINDOWPOS_UNDEFINED,
                  SDL_WINDOWPOS_UNDEFINED,
@@ -226,6 +229,7 @@ static void create_window()
              );
     if (window == NULL)
         log_fatal("Could not create SDL Window\n%s", SDL_GetError());
+
     SDL_ShowCursor(SDL_DISABLE);
 
     // Create HW accelerated renderer, get screen resolution for geometry calculations
@@ -323,6 +327,7 @@ static void init_sdl_ttf()
 // A function to close subsystems and free memory before quitting
 static void cleanup()
 {
+    cleanup_video();
     // Wait until all threads have completed
     SDL_WaitThread(Slideshowhread, NULL);
     SDL_WaitThread(clock_thread, NULL);
@@ -761,8 +766,9 @@ static void draw_screen()
     if (!(state.application_launching && config.on_launch == ON_LAUNCH_BLANK)) {
         if (config.background_mode == BACKGROUND_IMAGE || config.background_mode == BACKGROUND_SLIDESHOW)
             SDL_RenderCopy(renderer, background_texture, NULL, NULL);
-
-        if (config.background_mode == BACKGROUND_SLIDESHOW && state.slideshow_transition)
+	else if (config.background_mode == BACKGROUND_VIDEO)
+		render_video_texture();
+	else if (config.background_mode == BACKGROUND_SLIDESHOW && state.slideshow_transition)
             SDL_RenderCopy(renderer, slideshow->transition_texture, NULL, NULL);
 
         // Draw background overlay
@@ -1232,14 +1238,17 @@ int main(int argc, char *argv[])
     init_sdl_image();
     init_sdl_ttf();
     validate_settings(&geo);
-    
-    // Initialize slideshow
-    if (config.background_mode == BACKGROUND_SLIDESHOW)
-        init_slideshow();
 
     // Initialize Nanosvg, create window and renderer
     init_svg();
     create_window();
+
+    // Initialize slideshow
+    if (config.background_mode == BACKGROUND_SLIDESHOW)
+        init_slideshow();
+    else if (config.background_mode == BACKGROUND_VIDEO)
+	init_video(config.background_image);
+
 
     // Initialize timing
     ticks.main = SDL_GetTicks();
@@ -1333,11 +1342,11 @@ int main(int argc, char *argv[])
 
     // Print debug info to log
     if (config.debug) {
-        debug_video(renderer, &display_mode);
-        debug_settings();
-        debug_gamepad(gamepad_controls);
-        debug_hotkeys(hotkeys);    
-        debug_menu_entries(config.first_menu, config.num_menus);
+//        debug_video(renderer, &display_mode);
+//        debug_settings();
+//        debug_gamepad(gamepad_controls);
+//        debug_hotkeys(hotkeys);
+//        debug_menu_entries(config.first_menu, config.num_menus);
     }
 
     // Load the default menu and display it
