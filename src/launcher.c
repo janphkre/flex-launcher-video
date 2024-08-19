@@ -1201,10 +1201,10 @@ void print_version(FILE *stream)
     SDL_GetVersion(&sdl_version);
     const SDL_version *img_version = IMG_Linked_Version();
     const SDL_version *ttf_version = TTF_Linked_Version();
-    fprintf(stream, PROJECT_NAME " version " PROJECT_VERSION ", using:" endline);
-    fprintf(stream, "  SDL       %u.%u.%u" endline, sdl_version.major, sdl_version.minor, sdl_version.patch);
-    fprintf(stream, "  SDL_image %u.%u.%u" endline, img_version->major, img_version->minor, img_version->patch);
-    fprintf(stream, "  SDL_ttf   %u.%u.%u" endline, ttf_version->major, ttf_version->minor, ttf_version->patch);
+    printf(PROJECT_NAME " version " PROJECT_VERSION ", using:" endline);
+    printf("  SDL       %u.%u.%u" endline, sdl_version.major, sdl_version.minor, sdl_version.patch);
+    printf("  SDL_image %u.%u.%u" endline, img_version->major, img_version->minor, img_version->patch);
+    printf("  SDL_ttf   %u.%u.%u" endline, ttf_version->major, ttf_version->minor, ttf_version->patch);
 }
 
 int main(int argc, char *argv[]) 
