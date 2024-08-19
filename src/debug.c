@@ -14,39 +14,40 @@
 #endif
 
 static int init_log(void);
+int loggingInit = 0;
 
 extern Config config;
-extern FILE *log_file;
+//extern FILE *log_file;
 
 // A function to initialize the logging subsystem
 static int init_log()
 {
     // Determine log path
-    char log_file_path[MAX_PATH_CHARS + 1];
+//    char log_file_path[MAX_PATH_CHARS + 1];
 #ifdef __unix__
-    char log_file_directory[MAX_PATH_CHARS + 1];
-    join_paths(log_file_directory, sizeof(log_file_directory), 4, getenv("HOME"), ".local", "share", EXECUTABLE_TITLE);
-    make_directory(log_file_directory);
-    join_paths(log_file_path, sizeof(log_file_path), 2, log_file_directory, FILENAME_LOG);
+//    char log_file_directory[MAX_PATH_CHARS + 1];
+//    join_paths(log_file_directory, sizeof(log_file_directory), 4, getenv("HOME"), ".local", "share", EXECUTABLE_TITLE);
+//    make_directory(log_file_directory);
+//    join_paths(log_file_path, sizeof(log_file_path), 2, log_file_directory, FILENAME_LOG);
 #else
-    join_paths(log_file_path, sizeof(log_file_path), 2, config.exe_path, FILENAME_LOG);
+//    join_paths(log_file_path, sizeof(log_file_path), 2, config.exe_path, FILENAME_LOG);
 #endif
 
     // Open log
-    log_file = fopen(log_file_path, "wb");
-    if (log_file == NULL) {
+    loggingInit = 1;
+//    if (log_file == NULL) {
 #ifdef __unix__
-        printf("Failed to create log file");
+//        printf("Failed to create log file");
 #endif
-        quit(EXIT_FAILURE);
-    }
-print_version(log_file);
-fputs("\n", log_file);
-print_compiler_info(log_file);
-fputs("\n", log_file);
+//        quit(EXIT_FAILURE);
+//    }
+print_version(NULL);
+printf("\n");
+print_compiler_info(NULL);
+printf("\n");
 #ifdef __unix__
-    if (config.debug)
-        printf("Debug mode enabled\nLog is outputted to %s\n", log_file_path);
+//    if (config.debug)
+//        printf("Debug mode enabled\nLog is outputted to %s\n", log_file_path);
 #endif
     return 0;
 }
@@ -59,7 +60,7 @@ void output_log(LogLevel log_level, const char *format, ...)
         return;
 
     // Initialize logging if not already initialized
-    if (log_file == NULL)
+    if (loggingInit == 0)
         init_log();
     
     // Output log
@@ -67,13 +68,13 @@ void output_log(LogLevel log_level, const char *format, ...)
     va_list args;
     va_start(args, format);
     size_t length = (size_t) vsnprintf(buffer, MAX_LOG_LINE_BYTES - 1, format, args);
-    fwrite(buffer, 1, length, log_file);
-    if (config.debug)
-        fflush(log_file);
+    printf(buffer, 1, length);
+//    if (config.debug)
+//        flush();
     
 #ifdef __unix__
-    if (log_level > LOGLEVEL_DEBUG)
-        fputs(buffer, stderr);
+//    if (log_level > LOGLEVEL_DEBUG)
+//        printf(buffer);
 #endif
     va_end(args);
 
@@ -83,12 +84,12 @@ void output_log(LogLevel log_level, const char *format, ...)
 
 void print_compiler_info(FILE *stream)
 {
-    fputs("Build date: " __DATE__ "\n", stream);
+    printf("Build date: " __DATE__ "\n");
 #ifdef __GNUC__
-    fprintf(stream, "Compiler:   GCC %u.%u\n", __GNUC__, __GNUC_MINOR__);
+    printf("Compiler:   GCC %u.%u\n", __GNUC__, __GNUC_MINOR__);
 #endif
 #ifdef _MSC_VER
-    fprintf(stream, "Compiler:   Microsoft C/C++ %.2f\n", (float) _MSC_VER / 100.0f);
+    printf("Compiler:   Microsoft C/C++ %.2f\n", (float) _MSC_VER / 100.0f);
 #endif
 
 }
