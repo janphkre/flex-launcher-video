@@ -45,6 +45,8 @@ if (UNIX)
   pkg_check_modules(SDL2 REQUIRED IMPORTED_TARGET sdl2>=${MIN_SDL_VERSION})
   pkg_check_modules(SDL2_IMAGE REQUIRED IMPORTED_TARGET SDL2_image>=${MIN_SDL_IMAGE_VERSION})
   pkg_check_modules(SDL2_TTF REQUIRED IMPORTED_TARGET SDL2_ttf>=${MIN_SDL_TTF_VERSION})
+  pkg_check_modules(LIBAVCODEC REQUIRED IMPORTED_TARGET libavcodec)
+  pkg_check_modules(LIBSWSCALE REQUIRED IMPORTED_TARGET libswscale)
 endif ()
 
 # Find dependencies - Windows
